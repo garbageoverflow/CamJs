@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Demo</title>
+    <script src="cam.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      WebCam.start()
+      WebCam.id = 'cam'
+      // change the size of the webcam
+      WebCam.width = '300';
+      WebCam.height = '150'
+    </script>
+  </head>
+  <body>
+    <video id="cam" autoplay width="700px" height="500px"></video>
+    <canvas id="canvas" width="700" height="500"></canvas>
+  </body>
+</html>
