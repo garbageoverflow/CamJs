@@ -34,20 +34,27 @@ Create a `<video>` tag with the id of the value of `WebCam.id` in yout HTML docu
 |description|Usage: WebCam.info.description Output: CamJs is a simple script that makes using Webcams with js easier|
 |author|Usage: WebCam.author Output: garbageoverflow|
 
-## Succes and error message customization
+## Succes, error and refresh message customization
 |Variable Name|Usage|Output|
 |---|---|---|
 |errormsg|WebCam.messages.errormsg = 'errormsg'|The value of WebCam.messages.errormsg|
 |succesmsg|WebCam.messages.succesmsg = 'succesmsg'|The value of WebCam.messages.succesmsg|
+|refreshmsg|WebCam.messages.errormsg = 'refreshmsg'|The value of refreshmsg|
+|snapmsg|WebCam.messages.snapmsg = 'snapmsg'|The value of snapmsg|
 
 ## Other Variables
 
-|Variable Name|Usage|
-|---|---|
-|id|WebCam.id = 'id'|
-|logelement|WebCam.logelement = 'text'; WebCam.log Output: Console message|
-|logarray|Used to store all the logelements|
-|msgstyle|Used to give style to the console messages from WebCam.log()|
+|Variable Name|Usage|Type|
+|---|---|---|
+|id|WebCam.id = 'id'|string|
+|logelement|WebCam.logelement = 'text'; WebCam.log Output: Console message|string|
+|logarray|Used to store all the logelements|array|
+|height|Used to set the canvas height (default = 500px)|string|
+|width|Used to set the canvas width (default = 700px)|string|
+|canvas|The is of the canvas used to display a snap (default = canvas)|string|
+|shutter_sound_path|Used to store the path to the `shutter_sound.mp3` file (default = `'./shutter_sound.mp3'`)|string|
+|shutter_sound|Used to know if the `WebCam.snap() command should play `shutter_sound.mp3`|boolean|
+
 
 ## Commands
 
@@ -62,6 +69,7 @@ Create a `<video>` tag with the id of the value of `WebCam.id` in yout HTML docu
 |WebCam.onresume(functionname)|Start a function when the video resumes|
 |WebCam.onrefresh(functionname)|Start a function when the video refreshes|
 |WebCam.log()|log something important|
+|WebCam.snap()|Take a picture and display it in a canvas|
 
 ## Command usage
 #### Using WebCam.onload()
@@ -171,10 +179,31 @@ For this to work you need to understand how the function works.
   ```JS
   // this will log the first element of the array
   console.log(WebCam.logarray[1]);
-
-  // you can also style it using the style we made
-  console.log(WebCam.logarray[1], msgstyle);
   ```
 
 As I said, your imagination is the limit.
 Over all, it's not the best script out there, but it gets the job done.
+
+#### Using WebCam.snap()
+This function is used to take a picture using the webcam and then display it in a canvas<sup>[with the id of `WebCam.canvas`]</sup>
+
+```html
+<!-- create an canvas -->
+<canvas id="canvas" width="700" height="500"></canvas>
+```
+
+```js
+// define the canvas id
+// default ID is `canvas`
+WebCam.canvas = 'canvas'
+WebCam.snap()
+```
+
+###### Optional
+```js
+// don't play shutter sound
+WebCam.shutter_sound = false;
+
+// change the path to the `shutter_sound.mp3` file
+WebCam.shutter_sound_path = './path/to/the/file'
+```
