@@ -8,27 +8,23 @@ const WebCam = {
   // webcam id
   id: 'video',
 
+  // webcam size
+  width: '700',
+  height: '500',
+
+  // snap settings
+  canvas: 'canvas',
+  shutter_sound_path: './shutter_sound.mp3',
+  shutter_sound: 'true',
+
   // logging
   logelement: 'log 1',
   logarray: [],
 
-  // message style
-  msgstyle : [
-    'background: linear-gradient(#88BD2C, #609307)'
-    , 'border: 1px solid #3E0E02'
-    , 'color: white'
-    , 'display: block'
-    , 'text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3)'
-    , 'box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255, 255, 255, 0.4) inset'
-    , 'line-height: 40px'
-    , 'text-align: center'
-    , 'font-weight: bold'
-].join(';'),
-
   // info
   info: {
     name: 'CamJs',
-    version: '2.0',
+    version: '2.1',
     description: 'CamJs is a simple script that makes using Webcams with js easier',
     author: 'garbageoverflow',
     repo: 'www.github.com/garbageoverflow/CamJs',
@@ -37,7 +33,9 @@ const WebCam = {
   // messages
   messages: {
     errormsg: 'Could not detect webcam',
-    succesmsg: 'Webcam detected'
+    succesmsg: 'Webcam detected',
+    refreshmsg: 'WebCam refreshed succesfully',
+    snapmsg: 'Snap Taken'
   },
 
   // functions
@@ -46,9 +44,9 @@ const WebCam = {
     navigator.mediaDevices.getUserMedia({video: true})
       .then(function(stream) {
         document.getElementById(WebCam.id).srcObject = stream;
-        console.log(WebCam.messages.succesmsg);
+        console.log("%c [CamJs]"+`%c ${WebCam.messages.succesmsg}`, "color: magenta", "color: green")
       }).catch(function() {
-        console.error(WebCam.messages.errormsg);
+        console.log("%c [CamJs]"+`%c ${WebCam.messages.errormsg}`, "color: magenta", "color: red")
       });
   },
   stop: function(e) {
@@ -61,16 +59,33 @@ const WebCam = {
       track.stop();
     }
     video.srcObject = null;
+    console.log("%c [CamJs]"+`%c Webcam stopped`, "color: magenta", "color: red")
   },
   pause: function() {
     document.getElementById(WebCam.id).pause()
+    console.log("%c [CamJs]"+`%c Webcam paused`, "color: magenta", "color: green")
   },
   resume: function() {
     document.getElementById(WebCam.id).play()
+    console.log("%c [CamJs]"+`%c Webcam resumed`, "color: magenta", "color: green")
   },
   refresh: function() {
-    WebCam.stop()
-    WebCam.start()
+    var video = document.getElementById(WebCam.id)
+    var stream = video.srcObject;
+    var tracks = stream.getTracks();
+    for (var i = 0; i < tracks.length; i++) {
+      var track = tracks[i];
+      track.stop();
+    }
+    video.srcObject = null;
+
+    navigator.mediaDevices.getUserMedia({video: true})
+      .then(function(stream) {
+        document.getElementById(WebCam.id).srcObject = stream;
+        console.log("%c [CamJs]"+`%c ${WebCam.messages.refreshmsg}`, "color: magenta", "color: green")
+      }).catch(function() {
+        console.log("%c [CamJs]"+`%c ${WebCam.messages.errormsg}`, "color: magenta", "color: red")
+      });
   },
   onload: function(funcname) {
     document.getElementById(WebCam.id).addEventListener("onload", funcname)
@@ -105,8 +120,22 @@ const WebCam = {
   },
   log: function() {
     WebCam.logarray.push(WebCam.logelement)
-    console.log(`%c ${WebCam.logelement}`, msgstyle);
+    console.log(`%c ${WebCam.logelement}`, 'color: green');
   },
+  snap: function() {
+    var webcam = document.getElementById(`${WebCam.id}`)
+    var canvas = document.getElementById(`${WebCam.canvas}`)
+    var context = canvas.getContext('2d');
+    context.drawImage(webcam, 0, 0, WebCam.width, WebCam.height);
+    console.log("%c [CamJs]"+`%c ${WebCam.messages.snapmsg}`, "color: magenta", "color: green")
+
+    if (WebCam.shutter_sound == true) {
+      var shutter = new Audio(`${WebCam.shutter_sound_path}`);
+      shutter.play()
+    } else if (WebCam.shutter_sound == false) {
+      console.log("%c [CamJs]"+`%c Shutter sound didn't play`, "color: magenta", "color: orange")
+    }
+  }
 }
 
 var message = `This app uses ${WebCam.info.name}, a script made by ${WebCam.info.author}. \n \n ${WebCam.info.repo} \n ${WebCam.info.version}`
